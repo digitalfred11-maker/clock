@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://date.nager.at; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+  <title>Calendario de días festivos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Calendario de días festivos</h1>
+    <div class="clock" aria-live="off">
+      <div id="clock-time" class="clock-time">--:--:--</div>
+      <div id="clock-date" class="clock-date"></div>
+      <div id="clock-zone" class="clock-zone"></div>
+    </div>
+  </header>
+
+  <section class="world" aria-label="Reloj mundial">
+    <h2>Reloj mundial</h2>
+    <ul id="world-clock" class="world-list"></ul>
+  </section>
+
+  <section class="controls">
+    <label>País
+      <select id="country" disabled><option>Cargando países…</option></select>
+    </label>
+    <label>Año
+      <input id="year" type="number" min="1975" max="2075" step="1">
+    </label>
+  </section>
+
+  <p id="status" class="status" role="status"></p>
+
+  <main class="layout">
+    <section id="calendar" class="calendar" aria-label="Calendario anual"></section>
+    <aside class="holidays">
+      <h2>Festivos <span id="count"></span></h2>
+      <ul id="holiday-list"></ul>
+    </aside>
+  </main>
+
+  <footer class="foot">Datos: Nager.Date (date.nager.at)</footer>
+  <script src="app.js"></script>
+</body>
+</html>

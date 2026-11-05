@@ -1,0 +1,47 @@
+:root {
+  --bg: #ffffff; --surface: #f7f8fa; --border: #e5e7eb;
+  --text: #1f2328; --muted: #57606a; --accent: #3b82d4; --holiday: #d94f4f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto; max-width: 1200px; padding: 16px;
+  font: 14px/1.6 -apple-system, "Segoe UI", system-ui, sans-serif;
+  color: var(--text); background: var(--bg);
+}
+.top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+h1 { margin: 0; font-size: 22px; }
+h2 { font-size: 16px; margin: 0 0 8px; }
+.clock { text-align: right; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; }
+.clock-time { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--accent); }
+.clock-date { text-transform: capitalize; }
+.clock-zone { color: var(--muted); font-size: 12px; }
+.world { margin-top: 16px; }
+.world-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+.world-list li { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+.w-city { font-weight: 600; }
+.w-time { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--accent); }
+.w-date, .w-offset { color: var(--muted); font-size: 12px; text-transform: capitalize; }
+.controls { display: flex; gap: 16px; margin: 16px 0 8px; flex-wrap: wrap; }
+.controls label { display: flex; flex-direction: column; font-weight: 600; gap: 4px; }
+select, input { font: inherit; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; min-width: 120px; }
+select { min-width: 280px; }
+.status { min-height: 22px; color: var(--muted); margin: 4px 0 8px; }
+.status.error { color: var(--holiday); }
+.layout { display: grid; grid-template-columns: 1fr 300px; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+.calendar { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.month { border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: var(--bg); }
+.month h3 { margin: 0 0 4px; font-size: 14px; text-transform: capitalize; text-align: center; }
+.grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 2px; }
+.dow { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+.day { padding: 3px 0; border-radius: 4px; font-variant-numeric: tabular-nums; }
+.day.weekend { color: var(--muted); }
+.day.holiday { background: var(--holiday); color: #fff; font-weight: 600; cursor: help; }
+.day.today { outline: 2px solid var(--accent); outline-offset: -2px; }
+.holidays { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; max-height: 80vh; overflow: auto; position: sticky; top: 8px; }
+.holidays ul { list-style: none; margin: 0; padding: 0; }
+.holidays li { padding: 6px 0; border-bottom: 1px solid var(--border); }
+.holidays li:last-child { border-bottom: 0; }
+.h-date { color: var(--holiday); font-weight: 600; text-transform: capitalize; display: block; font-size: 12px; }
+.h-local { color: var(--muted); font-size: 12px; }
+.foot { margin-top: 24px; padding-top: 8px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--muted); }
