@@ -32,18 +32,55 @@ const TZ = {
   SJ: "Arctic/Longyearbyen", SK: "Europe/Bratislava", SM: "Europe/San_Marino", SR: "America/Paramaribo",
   SV: "America/El_Salvador", TN: "Africa/Tunis", TR: "Europe/Istanbul", UA: "Europe/Kyiv",
   US: "America/New_York", UY: "America/Montevideo", VA: "Europe/Vatican", VE: "America/Caracas",
+  AG: "America/Antigua", DM: "America/Dominica", KN: "America/St_Kitts", LC: "America/St_Lucia",
+  TT: "America/Port_of_Spain", VC: "America/St_Vincent",
   VN: "Asia/Ho_Chi_Minh", ZA: "Africa/Johannesburg", ZW: "Africa/Harare",
 };
 
 // Catálogo de ciudades que el usuario puede elegir (zona IANA fija). No se muestra ninguna por defecto.
 const STORAGE_KEY = "worldClocks";
 const WORLD_CITIES = [
-  { name: "Bogotá", tz: "America/Bogota" },
-  { name: "Ciudad de México", tz: "America/Mexico_City" },
-  { name: "Nueva York", tz: "America/New_York" },
-  { name: "Los Ángeles", tz: "America/Los_Angeles" },
-  { name: "São Paulo", tz: "America/Sao_Paulo" },
-  { name: "Buenos Aires", tz: "America/Argentina/Buenos_Aires" },
+  // América del Norte
+  { name: "Ottawa, Canadá", tz: "America/Toronto" },
+  { name: "Nueva York, EE. UU.", tz: "America/New_York" },
+  { name: "Los Ángeles, EE. UU.", tz: "America/Los_Angeles" },
+  { name: "Ciudad de México, México", tz: "America/Mexico_City" },
+  // América Central
+  { name: "Belmopán, Belice", tz: "America/Belize" },
+  { name: "San José, Costa Rica", tz: "America/Costa_Rica" },
+  { name: "San Salvador, El Salvador", tz: "America/El_Salvador" },
+  { name: "Ciudad de Guatemala, Guatemala", tz: "America/Guatemala" },
+  { name: "Tegucigalpa, Honduras", tz: "America/Tegucigalpa" },
+  { name: "Managua, Nicaragua", tz: "America/Managua" },
+  { name: "Ciudad de Panamá, Panamá", tz: "America/Panama" },
+  // Caribe
+  { name: "Saint John's, Antigua y Barbuda", tz: "America/Antigua" },
+  { name: "Nassau, Bahamas", tz: "America/Nassau" },
+  { name: "Bridgetown, Barbados", tz: "America/Barbados" },
+  { name: "La Habana, Cuba", tz: "America/Havana" },
+  { name: "Roseau, Dominica", tz: "America/Dominica" },
+  { name: "Saint George's, Granada", tz: "America/Grenada" },
+  { name: "Puerto Príncipe, Haití", tz: "America/Port-au-Prince" },
+  { name: "Kingston, Jamaica", tz: "America/Jamaica" },
+  { name: "Santo Domingo, República Dominicana", tz: "America/Santo_Domingo" },
+  { name: "Basseterre, San Cristóbal y Nieves", tz: "America/St_Kitts" },
+  { name: "Castries, Santa Lucía", tz: "America/St_Lucia" },
+  { name: "Kingstown, San Vicente y las Granadinas", tz: "America/St_Vincent" },
+  { name: "Puerto España, Trinidad y Tobago", tz: "America/Port_of_Spain" },
+  // América del Sur
+  { name: "Buenos Aires, Argentina", tz: "America/Argentina/Buenos_Aires" },
+  { name: "La Paz, Bolivia", tz: "America/La_Paz" },
+  { name: "São Paulo, Brasil", tz: "America/Sao_Paulo" },
+  { name: "Santiago, Chile", tz: "America/Santiago" },
+  { name: "Bogotá, Colombia", tz: "America/Bogota" },
+  { name: "Quito, Ecuador", tz: "America/Guayaquil" },
+  { name: "Georgetown, Guyana", tz: "America/Guyana" },
+  { name: "Asunción, Paraguay", tz: "America/Asuncion" },
+  { name: "Lima, Perú", tz: "America/Lima" },
+  { name: "Paramaribo, Surinam", tz: "America/Paramaribo" },
+  { name: "Montevideo, Uruguay", tz: "America/Montevideo" },
+  { name: "Caracas, Venezuela", tz: "America/Caracas" },
+  // Resto del mundo
   { name: "Londres", tz: "Europe/London" },
   { name: "Madrid", tz: "Europe/Madrid" },
   { name: "Moscú", tz: "Europe/Moscow" },
@@ -116,7 +153,8 @@ function saveSelectedTz() {
 
 function renderWorldPicker() {
   els.worldPick.replaceChildren();
-  const available = WORLD_CITIES.filter((c) => !selectedTz.includes(c.tz));
+  const available = WORLD_CITIES.filter((c) => !selectedTz.includes(c.tz))
+    .sort((a, b) => a.name.localeCompare(b.name, "es"));
   for (const c of available) {
     const opt = document.createElement("option");
     opt.value = c.tz;
