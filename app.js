@@ -35,7 +35,8 @@ const TZ = {
   VN: "Asia/Ho_Chi_Minh", ZA: "Africa/Johannesburg", ZW: "Africa/Harare",
 };
 
-// Ciudades del reloj mundial (zona IANA fija).
+// Catálogo de ciudades que el usuario puede elegir (zona IANA fija). No se muestra ninguna por defecto.
+const STORAGE_KEY = "worldClocks";
 const WORLD_CITIES = [
   { name: "Bogotá", tz: "America/Bogota" },
   { name: "Ciudad de México", tz: "America/Mexico_City" },
@@ -60,6 +61,7 @@ const els = {
   country: $("country"), year: $("year"), status: $("status"), calendar: $("calendar"),
   list: $("holiday-list"), count: $("count"), time: $("clock-time"),
   date: $("clock-date"), zone: $("clock-zone"), world: $("world-clock"),
+  worldPick: $("world-pick"), worldAdd: $("world-add"), worldEmpty: $("world-empty"),
 };
 
 let currentTz = undefined; // undefined => zona local del equipo
@@ -68,6 +70,7 @@ let loadSeq = 0;
 let shownYear = null;      // año dibujado en el calendario
 let renderedToday = null;  // "hoy" usado en el último dibujado
 const worldCells = [];     // { fmtTime, fmtDate, fmtOffset, time, date, offset }
+let selectedTz = [];       // zonas elegidas por el usuario, en orden de adición
 
 // ---------- Utilidades ----------
 function setStatus(msg, isError = false) {
@@ -92,12 +95,72 @@ const pad = (n) => String(n).padStart(2, "0");
 const isoKey = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
 
 // ---------- Reloj ----------
+function loadSelectedTz() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (!Array.isArray(raw)) return [];
+    const valid = new Set(WORLD_CITIES.map((c) => c.tz)); // lista blanca
+    return [...new Set(raw)].filter((tz) => typeof tz === "string" && valid.has(tz));
+  } catch {
+    return [];
+  }
+}
+
+function saveSelectedTz() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(selectedTz));
+  } catch {
+    // almacenamiento no disponible: la selección sólo vale para esta sesión
+  }
+}
+
+function renderWorldPicker() {
+  els.worldPick.replaceChildren();
+  const available = WORLD_CITIES.filter((c) => !selectedTz.includes(c.tz));
+  for (const c of available) {
+    const opt = document.createElement("option");
+    opt.value = c.tz;
+    opt.textContent = c.name;
+    els.worldPick.appendChild(opt);
+  }
+  els.worldPick.disabled = els.worldAdd.disabled = available.length === 0;
+}
+
+function addWorldClock() {
+  const tz = els.worldPick.value;
+  if (!WORLD_CITIES.some((c) => c.tz === tz) || selectedTz.includes(tz)) return;
+  selectedTz.push(tz);
+  saveSelectedTz();
+  buildWorldClock();
+  tickWorldClock(new Date());
+}
+
+function removeWorldClock(tz) {
+  selectedTz = selectedTz.filter((t) => t !== tz);
+  saveSelectedTz();
+  buildWorldClock();
+  tickWorldClock(new Date());
+}
+
 function buildWorldClock() {
-  for (const c of WORLD_CITIES) {
+  els.world.replaceChildren();
+  worldCells.length = 0;
+  els.worldEmpty.hidden = selectedTz.length > 0;
+  renderWorldPicker();
+  for (const tz of selectedTz) {
+    const c = WORLD_CITIES.find((x) => x.tz === tz);
+    if (!c) continue;
     const li = document.createElement("li");
     const name = document.createElement("div");
     name.className = "w-city";
     name.textContent = c.name;
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "w-remove";
+    del.textContent = "×";
+    del.setAttribute("aria-label", `Quitar ${c.name}`);
+    del.addEventListener("click", () => removeWorldClock(c.tz));
+    name.appendChild(del);
     const time = document.createElement("div");
     time.className = "w-time";
     const date = document.createElement("div");
@@ -254,6 +317,8 @@ async function loadHolidays() {
 
 async function init() {
   els.year.value = new Date().getFullYear();
+  selectedTz = loadSelectedTz();
+  els.worldAdd.addEventListener("click", addWorldClock);
   buildWorldClock();
   tickClock();
   setInterval(tickClock, 1000);
